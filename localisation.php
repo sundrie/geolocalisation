@@ -8,17 +8,28 @@
     die($e->getMessage());
   }
 
-    var_dump($_POST);
-    if(isset($_POST['ajax'])){
-      var_dump("coucou");
-      $query = $instance->prepare("INSERT INTO position (longitude, latitude)
-      VALUES (:longitude,:latitude)");
+  //On récupère la liste de tous les taxis
+  $sql = "SELECT * FROM position";
+  $listeTaxi = $instance->query($sql)->fetchAll();
 
-      $insertSuccess = $query->execute(array(
-        "longitude" => $_POST['longitude'],
-        "latitude" => $_POST['latitude']
-      ));
-    }
+  json_encode($listeTaxi);
+
+    // J'ai mit en commentaire car ça rajoutait une ligne à chaque fois pendant les test (MAIS LE CODE EST BON)
+
+    // Si on appuie sur le bouton
+    // if($_POST){
+    //
+    //   $date =  date("Y-m-d h:i:s");
+    //
+    //   $query = $instance->prepare("INSERT INTO position (longitude, latitude, date)
+    //   VALUES (:longitude,:latitude,:date)");
+    //
+    //   $insertSuccess = $query->execute(array(
+    //     "longitude" => $_POST['longitude'],
+    //     "latitude" => $_POST['latitude'],
+    //     "date" => $date
+    //   ));
+    // }
 
 ?>
 
@@ -36,29 +47,30 @@
   </head>
   <body>
 
+    <script type="text/javascript">
+      setInterval(function () { window.location.reload(); }, 120000);
+      // Toutes les 2 minutes ont envoie la liste en json au script js
+      var listeTaxi = <?php echo json_encode($listeTaxi); ?>;
+      var actualisation = window.setInterval(jsonPost,120000);
+      function jsonPost(){
+        listeTaxi = <?php echo json_encode($listeTaxi); ?>;
+      }
+    </script>
+
+    <!-- Style de la map -->
+    <style type="text/css">
+        #map {width:500px; height: 400px; }
+    </style>
+        <p>Appuyez sur le bouton pour obtenir votre localisation actuelle</p>
+        <p>La map s'actualise automatiquement toutes les 2 minutes</p>
+        <form method="post" name="ajax">
+          <button id="localisation" type="submit">Localisation</button>
+        </form>
+
+        <!-- la map google -->
+        <div id="map"></div>
+
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2VTy4CLUElPDtIUEFmH3c_Yb_XNNsJ5w&callback=initMap"></script>
+
   </body>
 </html>
-
-<!-- Style de la map -->
-<style type="text/css">
-    #map {width:500px; height: 400px; }
-</style>
-    <p>Appuyez sur le bouton pour obtenir votre localisation actuelle</p>
-    <form method="post" name="ajax">
-      <input type="hidden" name="longitude" value="">
-      <input type="hidden" name="latitude" value="">
-      <button id="localisation" type="submit">Localisation</button>
-    </form>
-
-    <!--
-    Ceci fonctionne, nous renvoie bien le POST de textarea
-    <form method="post" name="test">
-      <textarea name="name" rows="8" cols="80">Ceci est un test</textarea>
-      <button id="test" type="submit">Test</button>
-    </form>
-    -->
-
-    <!-- la map google -->
-    <div id="map"></div>
-
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2VTy4CLUElPDtIUEFmH3c_Yb_XNNsJ5w&callback=initMap"></script>
