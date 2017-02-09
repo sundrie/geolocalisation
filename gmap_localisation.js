@@ -2,7 +2,7 @@ window.onload = function(){
 
   // On masque la map dès le départ car pas utile au lancement de page puisque les données GPS n'ont pas été récupérées
   var mapContainer = document.getElementById('map');
-  mapContainer.style.display="none";
+  var message = document.getElementById('message');
 
   // On déclare nos variables pour quels soient accesibles partout dans le code
   var lati;
@@ -11,24 +11,15 @@ window.onload = function(){
   // Bouton localisation
   var GPSButton = document.getElementById('localisation');
 
-  //initMap();
-
-
-  // if (GPSButton) {
-  //   GPSButton.addEventListener('click', function(e){
-
-      //e.preventDefault();
-
       // On affiche la map dès que le bouton est pressé
       getLocation();
 
       // toutes les 3 minutes (180000 ms) - 2 minutes (120000 ms)ça réappelle la geolocalisation
-      var actualPosition = window.setInterval(actualisationMap,120000);
+      var actualPosition = window.setInterval(actualisationMap,60000);
       function actualisationMap(){
         getLocation();
       }
-  //   });
-  // }
+
 
   // permet de récupérer la position en long et lat
   function getLocation() {
@@ -47,27 +38,22 @@ window.onload = function(){
       // puis on lance la fonction d'affichage de la map
       initMap();
 
-      // On appelle la fonction d'envoi des coordonnées GPS
-      sendGPSBDD();
+      // Au clic sur le bouton on envoie ses coordonnées
+      if (GPSButton) {
+         GPSButton.addEventListener('click', function(e){
+            e.preventDefault();
 
+            // On appelle la fonction d'envoi des coordonnées GPS
+            sendGPSBDD();
+         });
+      }
   }
 
   // Cette variable correspond à l'objet google maps
   var map;
 
   function initMap() {
-    //
-    // $.ajax({
-    //   url: 'localisation.php',
-    //   method : 'POST',
-    //   data : data,
-    //   dataType: 'json',
-    //   success: function(result){
-    //     console.log(result['latitude']);
-    //   }
-    // });
 
-    mapContainer.style.display="block";
     // Create a map object and specify the DOM element for display.
     map = new google.maps.Map(document.getElementById('map'), {
       center:{lat: lati,lng: long},
@@ -76,9 +62,7 @@ window.onload = function(){
     });
 
 
-
-
-
+    // On place un marqueur pour chaque lignes dans la bdd
     for (var i = 0; i < listeTaxi.length; i++) {
 
       // On convertit les chaines de string en number
@@ -92,7 +76,8 @@ window.onload = function(){
         position: localisationGPS,
         map: map,
         animation: google.maps.Animation.DROP,
-        title: 'Vous êtes ici'
+        // A voir plus tard si on fait table utilisateur récupèrer le nom et prénom
+        // title: 'Vous êtes ici'
       });
     }
 
@@ -108,7 +93,8 @@ window.onload = function(){
           longitude: long,
           latitude: lati
         },
-        success : function(){
+        success : function(data){
+          message.append("Coordonnées bien envoyées");
         }
       });
 

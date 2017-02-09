@@ -1,0 +1,9 @@
+nom BDD : geolocalisation
+
+table position
+
+id int	AUTO_INCREMENT
+longitude	float
+latitude	float
+date	datetime
+5	user_id	int
