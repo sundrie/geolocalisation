@@ -14,12 +14,38 @@
 
   json_encode($listeTaxi);
 
-    // J'ai mit en commentaire car ça rajoutait une ligne à chaque fois pendant les test (MAIS LE CODE EST BON)
+  // valeur arbitraire utilisé pour les tests !
+  $userid = 4;
 
-    // Si on reçoit des données du js
-    if($_POST){
-      $date = date("Y-m-d h:i:s");
-      $userid = $_POST['id'];
+  // meilleur pour les performances
+  $arr_length = count($listeTaxi);
+  for ($i=0; $i < $arr_length ; $i++) {
+  //   // si on trouve l'id de l'utilisateur dans la base de données
+    if ($userid == $listeTaxi[$i]['user_id']) {
+      $alreadylocalisated = true;
+    } else {
+      $alreadylocalisated = false;
+    }
+
+  }
+
+  // Si on reçoit les données du ajax
+  if($_POST){
+
+    $date = date("Y-m-d h:i:s");
+
+    if ($alreadylocalisated) {
+
+
+      $query = $instance->prepare("UPDATE position SET longitude = :longitude, latitude = :latitude, date = :date WHERE user_id = :userid");
+      $query->execute(array(
+      	"longitude" => $_POST['longitude'],
+      	"latitude" => $_POST['latitude'],
+      	"date" => $date,
+        "userid" => $userid
+        ));
+
+    } else {
 
       $query = $instance->prepare("INSERT INTO position (longitude, latitude, date, user_id)
       VALUES (:longitude,:latitude,:date,:user_id)");
@@ -30,6 +56,10 @@
         "date" => $date,
         "user_id" => $userid
       ));
+
+    }
+
+
     }
 
 ?>
@@ -61,19 +91,18 @@
     <!-- Style de la map -->
     <style type="text/css">
         #map {
-          width:500px;
-          height: 400px;
+          width: 800px;
+          height: 600px;
         }
     </style>
 
         <!-- <p>Appuyez sur le bouton pour obtenir votre localisation actuelle</p> -->
         <p>La map s'actualise automatiquement toutes les minutes</p>
         <form method="post" name="ajax">
-          <!-- On demande l'id pour les tests -->
-          <label for="user_id">Votre id : </label><input type="text" name="id" value="">
 
           <button id="localisation" type="submit">Localisation</button>
         </form>
+
 
         <!-- la map google -->
         <div id="map"></div>
@@ -81,6 +110,8 @@
         <!-- Pour écrire un message si les données ont bien été envoyées -->
         <div id="message"></div>
 
+
+        <!-- Chargement de l'API GMap -->
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2VTy4CLUElPDtIUEFmH3c_Yb_XNNsJ5w&callback=initMap"></script>
 
   </body>

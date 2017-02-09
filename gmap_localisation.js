@@ -2,7 +2,6 @@ window.onload = function(){
 
   // On masque la map dès le départ car pas utile au lancement de page puisque les données GPS n'ont pas été récupérées
   var mapContainer = document.getElementById('map');
-  var message = document.getElementById('message');
 
   // On déclare nos variables pour quels soient accesibles partout dans le code
   var lati;
@@ -45,7 +44,9 @@ window.onload = function(){
 
             // On appelle la fonction d'envoi des coordonnées GPS
             sendGPSBDD();
+
          });
+
       }
   }
 
@@ -94,7 +95,11 @@ window.onload = function(){
           latitude: lati
         },
         success : function(data){
-          message.append("Coordonnées bien envoyées");
+          $('#message').html("Coordonnées bien envoyées");
+          //$('#message').fadeOut(3000);
+
+          //On désactive le bouton pour éviter le spam
+          GPSButton.disabled = true;
         }
       });
 

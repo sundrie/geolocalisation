@@ -1,0 +1,14 @@
+
+
+// 1 : on ouvre le fichier
+$monfichier = fopen('test.txt', 'r+');
+
+// 2 : on fera ici nos opérations sur le fichier...
+fputs($monfichier, 'C est un nouvel utilisateur je l inserre !');
+
+// 3 : quand on a fini de l'utiliser, on ferme le fichier
+fclose($monfichier);
+
+
+
+le if et else de $alreadylocalisated fonctionne ! 
