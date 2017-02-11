@@ -1,5 +1,10 @@
 <?php
-  // On envoie les coordonnées GPS (récupérées avec AJAX)
+
+  // On définit la date d'aujourd'hui
+  $today = date("Y-m-d");
+
+  // valeur arbitraire utilisé pour les tests !
+  $userid = 2;
 
   // Connexion à la BDD
   try {
@@ -14,9 +19,6 @@
 
   json_encode($listeTaxi);
 
-  // valeur arbitraire utilisé pour les tests !
-  $userid = 2;
-
   // meilleur pour les performances
   $arr_length = count($listeTaxi);
   for ($i=0; $i < $arr_length ; $i++) {
@@ -24,7 +26,17 @@
     if ($userid == $listeTaxi[$i]['user_id']) {
       $alreadylocalisated = true;
     }
+    if ($listeTaxi[$i]['date'] < $today) {
+      $pastday = true;
+    }
 
+  }
+
+  if ($pastday) {
+    // Toutes les coordonnées antérieures à aujourd'hui sont supprimées
+    $sql = "DELETE FROM position WHERE date < '".$today."'";
+
+    $instance->query($sql);
   }
 
   // Si on reçoit les données du ajax
