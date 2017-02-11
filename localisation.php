@@ -15,16 +15,14 @@
   json_encode($listeTaxi);
 
   // valeur arbitraire utilisé pour les tests !
-  $userid = 4;
+  $userid = 2;
 
   // meilleur pour les performances
   $arr_length = count($listeTaxi);
   for ($i=0; $i < $arr_length ; $i++) {
-  //   // si on trouve l'id de l'utilisateur dans la base de données
+  //   // si on trouve l'id de l'utilisateur dans la base de données $alreadylocalisated est défini sinon renvoie null
     if ($userid == $listeTaxi[$i]['user_id']) {
       $alreadylocalisated = true;
-    } else {
-      $alreadylocalisated = false;
     }
 
   }
@@ -33,9 +31,8 @@
   if($_POST){
 
     $date = date("Y-m-d h:i:s");
-
+    // Si c'est un nouveau utilisateur
     if ($alreadylocalisated) {
-
 
       $query = $instance->prepare("UPDATE position SET longitude = :longitude, latitude = :latitude, date = :date WHERE user_id = :userid");
       $query->execute(array(
@@ -45,7 +42,9 @@
         "userid" => $userid
         ));
 
-    } else {
+    }
+    // Si l'utilisateur n'est pas dans la base de données
+    if ($alreadylocalisated == null){
 
       $query = $instance->prepare("INSERT INTO position (longitude, latitude, date, user_id)
       VALUES (:longitude,:latitude,:date,:user_id)");

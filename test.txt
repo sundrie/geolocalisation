@@ -11,4 +11,4 @@ fclose($monfichier);
 
 
 
-le if et else de $alreadylocalisated fonctionne ! 
+POUR EVITER DUPLICATAS DE USER_ID POSSIBILITE DE SUPPRIMER AVANT D'UPDATE (DU COUP BAH ON FAIT UNE INSERT ???)
