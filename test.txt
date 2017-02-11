@@ -1,0 +1,14 @@
+
+
+// 1 : on ouvre le fichier
+$monfichier = fopen('test.txt', 'r+');
+
+// 2 : on fera ici nos opérations sur le fichier...
+fputs($monfichier, 'C est un nouvel utilisateur je l inserre !');
+
+// 3 : quand on a fini de l'utiliser, on ferme le fichier
+fclose($monfichier);
+
+
+
+POUR EVITER DUPLICATAS DE USER_ID POSSIBILITE DE SUPPRIMER AVANT D'UPDATE (DU COUP BAH ON FAIT UNE INSERT ???)
