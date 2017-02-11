@@ -1,5 +1,6 @@
 <?php
-
+  // Utilisée pour vérifier dans BDD si date < aujourd'hui
+  $pastday = false;
   // On définit la date d'aujourd'hui
   $today = date("Y-m-d");
 
@@ -29,10 +30,9 @@
     if ($listeTaxi[$i]['date'] < $today) {
       $pastday = true;
     }
-
   }
 
-  if ($pastday) {
+  if ($pastday == true) {
     // Toutes les coordonnées antérieures à aujourd'hui sont supprimées
     $sql = "DELETE FROM position WHERE date < '".$today."'";
 
